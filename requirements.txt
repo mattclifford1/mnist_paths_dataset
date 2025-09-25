@@ -1,0 +1,8 @@
+pandas
+notebook
+numpy
+matplotlib
+scikit-learn
+tqdm
+scipy
+numba
