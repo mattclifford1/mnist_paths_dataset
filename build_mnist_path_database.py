@@ -100,7 +100,8 @@ def main(number_of_samples=None,
 
     # concatenate all path dfs into a single df
     all_paths_df = pd.concat(path_dfs, ignore_index=True)
-    path = f"mnist_paths_datasets/mnist_paths_{distance_model}_k{k_neighbors}_samples{number_of_samples}.csv"
+    data_size = X.shape[0]
+    path = f"mnist_paths_datasets/mnist_paths_space-{distance_model}_k-{k_neighbors}_paths-{n_paths}_datasize-{data_size}.csv"
     os.makedirs("mnist_paths_datasets", exist_ok=True)
     all_paths_df.to_csv(path, index=False)
     print(f"Saved paths to {path}")
@@ -112,7 +113,9 @@ if __name__ == "__main__":
     distance_model = 'pca'  # options: 'raw', 'pca', or 'tsne'
     k_neighbors = 20 # number of neighbors for k-NN graph
     n_paths = 100000  # number of random paths to create
-    # n_paths = 10000  # number of random paths to create
+    # n_paths = 100  # number of random paths to create
+
+    print(f'Path parameters: \nsamples={number_of_samples} \nmodel={distance_model} \nk={k_neighbors} \nn_paths={n_paths}')
 
     main(number_of_samples=number_of_samples,
          distance_model=distance_model,
