@@ -4,7 +4,7 @@ This repo uses code from Ed's [repo](https://github.com/Teddyzander/Local-FACE/t
 
 
 ## Supported path types
- - Closest
+ - Closest with 
 
 
 
