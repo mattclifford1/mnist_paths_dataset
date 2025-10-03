@@ -1,0 +1,17 @@
+# Shared settings (across all three methods)
+seed: 123
+predictor: model
+distance_threshold: 6.1
+prediction_threshold: 0.6
+penalty_term: 1.1
+distance_function: "l2"   # alternative: "l1", "l2", "weighted"
+method: "epsilon"             # alternative: "knn", "epsilon", "kde"
+directed: True                # alternative: False
+
+kde: 
+  density_threshold: 1e-5 
+
+knn:
+  n_neighbours: 5
+
+epsilon:
