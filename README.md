@@ -7,7 +7,7 @@ This repo uses code from Ed's [repo](https://github.com/Teddyzander/Local-FACE/t
  - Shortest path in pca, raw or tsne space
  - Face paths
 
-## Running face
+## Running face paths
 reqs: using python 3.12 and deps in requirements.txt
 
 [build_mnist_path_database_face.py](./build_mnist_path_database_face.py) makes the dataset.
