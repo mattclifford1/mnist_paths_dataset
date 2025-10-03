@@ -39,9 +39,8 @@ def get_weights_epsilon_parrelel(n_samples, X, distance_threshold,
         iterator = tqdm(iterator, desc="Building weight matrix (parallel)")
 
     # Run parallel over rows
-    results = Parallel(n_jobs=n_jobs)(
-        delayed(compute_row)(i) for i in iterator
-    )
+    with Parallel(n_jobs=n_jobs) as parallel:
+        results = parallel(delayed(compute_row)(i) for i in iterator)
 
     # Stack rows into full matrix
     W = np.vstack(results)

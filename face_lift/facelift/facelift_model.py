@@ -204,7 +204,7 @@ class FaceLift:
         }
         
         print("Constructing the weight matrix...")
-        weight_matrix = get_weight_matrix(params, parallel=True)
+        weight_matrix = get_weight_matrix(params, parallel=False)
         print("Constructing graph...")
         self.graph = construct_graph(weight_matrix)
         print("Graph construction completed.")
