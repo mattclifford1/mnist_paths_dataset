@@ -11,7 +11,9 @@ def get_face_path_df(face_finder,
                      start_idx, 
                          end_label,
                          start_label=None):
-    path = face_finder.get_face_path(start_idx, end_label)
+    path = face_finder.get_face_path(start_idx, end_label, _print=True)
+    if path is None:
+        return path
     end_idx = path[-1]
 
     # turn into df with columns: index, next index path, path id, start label in path, end label in path
@@ -43,9 +45,10 @@ def main(number_of_samples=None,
     face_finder = facelift_paths(X, y)
 
     # create a list of paths between random start and end points
-    start_end_details = []
-    already_seen_ids = set()
-    for i in tqdm(range(n_paths), desc="pre determining paths"):
+    path_dfs = []
+    data_size = X.shape[0]
+    print(f"Creating {n_paths} paths with data size {data_size}...")
+    for i in tqdm(range(n_paths), desc="making paths"):
         start_idx = np.random.randint(0, X.shape[0]-1)
         start_label = y[start_idx]
         # get random number in labels that is not start label
@@ -53,27 +56,22 @@ def main(number_of_samples=None,
         if len(possible_end_labels) == 0:
             raise ValueError("No possible end labels found")
         end_label = random.choice(possible_end_labels)
-        path_id = f"{start_idx}_to_{end_label}"
-        already_seen_ids.add(path_id)
-        details = {
-            'start_idx': start_idx,
-            'start_label': start_label,
-            'end_label': end_label,
-        }
-        start_end_details.append(details)
+        # path_id = f"{start_idx}_to_{end_label}"
 
-    # calculate all paths multiprocessing
-    path_dfs = []
-    i = 0
-    for single in tqdm(start_end_details, desc="creating paths"):
+        # make the paths
         path_df = get_face_path_df(face_finder,
-                                       single['start_idx'],
-                                       single['end_label'],
-                                       start_label=single['start_label'])
+                                       start_idx,
+                                       end_label,
+                                       start_label=y[start_idx])
+        if path_df is None:
+            print(f"Skipping path from {start_idx} to {end_label} due to error.")
+            continue
         path_dfs.append(path_df)
-        i += 1
+
+        print('added df')
+
+        # see if we need to save intermediate results
         if i % 100 == 0:
-            data_size = X.shape[0]
             save_dfs(path_dfs, data_size, n_paths=i)
 
     # concatenate all path dfs into a single df
@@ -83,6 +81,7 @@ def main(number_of_samples=None,
     os.makedirs("mnist_paths_datasets", exist_ok=True)
     all_paths_df.to_csv(path, index=False)
     print(f"Saved paths to {path}")
+
 
 def save_dfs(dfs, data_size, n_paths):
     # concatenate all path dfs into a single df

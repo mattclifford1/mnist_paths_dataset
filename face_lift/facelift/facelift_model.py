@@ -226,6 +226,8 @@ class FaceLift:
         cf_solutions[start_point_idx] = {}
         for order, end_point_idx in enumerate(end_points_indices):
             shortest_path = reconstruct_shortest_path(predecessors, start_point_idx, end_point_idx)
+            if shortest_path is None:
+                return None
             cf_solutions[start_point_idx][order] = shortest_path
         
         return cf_solutions
@@ -237,6 +239,8 @@ class FaceLift:
         call this if you just want a list of inds of one path
         '''
         paths_dict = self._get_CF_dict_from_set_params(start_point_idx, cf_class, num_paths, _print=_print)[start_point_idx]
+        if paths_dict is None:
+            return None
         paths = paths_dict[0]
         paths_ints = []
         for p in paths:

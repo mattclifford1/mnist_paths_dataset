@@ -373,9 +373,15 @@ def reconstruct_shortest_path(predecessors, start_point_idx, end_point_idx):
     else:
         node_path = []
     intermedium_idx = end_point_idx
+    count = 0
+    max_count = 150
     while (predecessors[intermedium_idx] != start_point_idx):
         node_path.append(intermedium_idx)
         intermedium_idx = predecessors[intermedium_idx]
+        count += 1
+        if count > max_count:
+            print("Warning: maximum path length exceeded.")
+            return None
     if intermedium_idx != node_path[-1]:
         node_path.append(intermedium_idx)
     node_path.append(start_point_idx)
