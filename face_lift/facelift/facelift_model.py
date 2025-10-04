@@ -238,10 +238,11 @@ class FaceLift:
         '''
         call this if you just want a list of inds of one path
         '''
-        paths_dict = self._get_CF_dict_from_set_params(start_point_idx, cf_class, num_paths, _print=_print)[start_point_idx]
+        paths_dict = self._get_CF_dict_from_set_params(start_point_idx, cf_class, num_paths, _print=_print)
         if paths_dict is None:
             return None
-        paths = paths_dict[0]
+        else:
+            paths = paths_dict[0]
         paths_ints = []
         for p in paths:
             paths_ints.append(int(p))

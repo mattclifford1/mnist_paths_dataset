@@ -71,7 +71,7 @@ def main(number_of_samples=None,
         print('added df')
 
         # see if we need to save intermediate results
-        if i % 100 == 0:
+        if (i+1) % 100 == 0:
             save_dfs(path_dfs, data_size, n_paths=i)
 
     # concatenate all path dfs into a single df
