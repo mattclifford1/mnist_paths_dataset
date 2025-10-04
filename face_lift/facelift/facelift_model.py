@@ -1,4 +1,5 @@
 from .library.facelift_helpers import *
+from tqdm import tqdm
 
 class FaceLift:
     """
@@ -210,25 +211,32 @@ class FaceLift:
         print("Graph construction completed.")
 
 
-    def _get_CF_dict_from_set_params(self, start_point_idx, cf_class, num_paths):
+    def _get_CF_dict_from_set_params(self, start_point_idx, cf_class, num_paths, _print=False):
+        if _print:
+            print('finding shortest path')
         dist_matrix, predecessors = find_shortest_path(self.graph, start_point_idx=start_point_idx)
+        if _print:
+            print('getting closest cf point')
         end_points_indices = get_closest_cf_point(dist_matrix, self.predictions, self.y, cf_class, self.class_labels, num_paths)
+
+        if _print:
+            print(f'reconstructing {len(end_points_indices)} end points')
 
         cf_solutions = {}
         cf_solutions[start_point_idx] = {}
-        for order, end_point_idx in enumerate(end_points_indices):
+        for order, end_point_idx in tqdm(enumerate(end_points_indices), total=len(end_points_indices), desc="reconstructing paths", leave=False):
             shortest_path = reconstruct_shortest_path(predecessors, start_point_idx, end_point_idx)
             cf_solutions[start_point_idx][order] = shortest_path
         
         return cf_solutions
 
 
-    def get_CF_path_from_set_params(self, start_point_idx, cf_class, num_paths=1):
+    def get_CF_path_from_set_params(self, start_point_idx, cf_class, num_paths=1,
+                                    _print=False):
         '''
         call this if you just want a list of inds of one path
         '''
-        paths_dict = self._get_CF_dict_from_set_params(start_point_idx, cf_class, num_paths)[start_point_idx]
-        print(paths_dict.keys())
+        paths_dict = self._get_CF_dict_from_set_params(start_point_idx, cf_class, num_paths, _print=_print)[start_point_idx]
         paths = paths_dict[0]
         paths_ints = []
         for p in paths:
