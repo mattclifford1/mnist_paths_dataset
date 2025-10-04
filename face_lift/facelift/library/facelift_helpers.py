@@ -380,7 +380,7 @@ def reconstruct_shortest_path(predecessors, start_point_idx, end_point_idx):
         intermedium_idx = predecessors[intermedium_idx]
         count += 1
         if count > max_count:
-            print("Warning: maximum path length exceeded.")
+            # print("Warning: maximum path length exceeded.")
             return None
     if intermedium_idx != node_path[-1]:
         node_path.append(intermedium_idx)

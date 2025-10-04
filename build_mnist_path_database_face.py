@@ -48,7 +48,9 @@ def main(number_of_samples=None,
     path_dfs = []
     data_size = X.shape[0]
     print(f"Creating {n_paths} paths with data size {data_size}...")
-    for i in tqdm(range(n_paths), desc="making paths"):
+    # for i in tqdm(range(n_paths), desc="making paths"):
+    i = 0
+    while i < n_paths + 1:
         start_idx = np.random.randint(0, X.shape[0]-1)
         start_label = y[start_idx]
         # get random number in labels that is not start label
@@ -64,16 +66,16 @@ def main(number_of_samples=None,
                                        end_label,
                                        start_label=y[start_idx])
         if path_df is None:
-            print(f"Skipping path from {start_idx} to {end_label} due to error.")
             continue
+
         path_dfs.append(path_df)
 
-        print('added df')
 
         # see if we need to save intermediate results
-        if (i+1) % 100 == 0:
+        if (i) % (n_paths/10) == 0:
             save_dfs(path_dfs, data_size, n_paths=i)
 
+        i += 1
     # concatenate all path dfs into a single df
     all_paths_df = pd.concat(path_dfs, ignore_index=True)
     data_size = X.shape[0]
@@ -93,8 +95,8 @@ def save_dfs(dfs, data_size, n_paths):
 
 if __name__ == "__main__":
     number_of_samples = None  # 59999 or None for full dataset
-    number_of_samples = 10000  # for quick testing (can't go below 10000 for mnist?)
-    n_paths = 100000  # number of random paths to create
+    # number_of_samples = 10000  # for quick testing (can't go below 10000 for mnist?)
+    n_paths = 1000000  # number of random paths to create
     # n_paths = 1000  # number of random paths to create
 
     print(f'Path parameters: \nsamples={number_of_samples} \nn_paths={n_paths}')
