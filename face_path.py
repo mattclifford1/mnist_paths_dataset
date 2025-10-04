@@ -43,7 +43,7 @@ class facelift_paths:
         if self.X_embed_2d is None:
             self.X_embed_2d = TSNE(n_components=2, 
                               perplexity=30,
-                              random_state=42).fit_transform(self.X_embed)
+                              random_state=42).fit_transform(self.X)
 
         fig, ax = plt.subplots(figsize=(6, 6))
         ax.scatter(self.X_embed_2d[:, 0], self.X_embed_2d[:, 1],
@@ -55,8 +55,9 @@ class facelift_paths:
 
         # add MNIST digit thumbnails at each path point
         for idx, (x0, y0) in zip(path, path_coords):
-            img = self.X[idx].reshape(28, 28)
-            imagebox = OffsetImage(img, zoom=0.5, cmap="gray")
+            im_flat = self.X.iloc[idx].values * 255
+            im = im_flat.reshape(28, 28)
+            imagebox = OffsetImage(im, zoom=0.5, cmap="gray")
             ab = AnnotationBbox(imagebox, (x0, y0), frameon=False)
             ax.add_artist(ab)
 
@@ -67,7 +68,7 @@ class facelift_paths:
                    c="blue", s=120, label="End")
         ax.legend()
 
-        ax.set_title(f"Shortest path in {self.distance_mode.upper()} space")
+        ax.set_title(f"FACE path in TSNE space")
         ax.set_xlabel("Dim 1")
         ax.set_ylabel("Dim 2")
         plt.show()
@@ -75,7 +76,9 @@ class facelift_paths:
     def plot_images_in_path(self, path):
         fig, axes = plt.subplots(1, len(path), figsize=(len(path)*1.2, 2))
         for ax, idx in zip(axes, path):
-            ax.imshow(self.X[idx].reshape(28, 28), cmap="gray")
+            im_flat = self.X.iloc[idx].values * 255
+            im = im_flat.reshape(28, 28)
+            ax.imshow(im, cmap="gray")
             ax.set_title(str(self.y[idx]))
             ax.axis("off")
 
