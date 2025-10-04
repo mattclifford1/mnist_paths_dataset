@@ -224,7 +224,7 @@ class FaceLift:
 
         cf_solutions = {}
         cf_solutions[start_point_idx] = {}
-        for order, end_point_idx in tqdm(enumerate(end_points_indices), total=len(end_points_indices), desc="reconstructing paths", leave=False):
+        for order, end_point_idx in enumerate(end_points_indices):
             shortest_path = reconstruct_shortest_path(predecessors, start_point_idx, end_point_idx)
             cf_solutions[start_point_idx][order] = shortest_path
         

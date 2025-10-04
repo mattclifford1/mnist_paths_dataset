@@ -95,8 +95,8 @@ def save_dfs(dfs, data_size, n_paths):
 if __name__ == "__main__":
     number_of_samples = None  # 59999 or None for full dataset
     number_of_samples = 10000  # for quick testing (can't go below 10000 for mnist?)
-    # n_paths = 100000  # number of random paths to create
-    n_paths = 1000  # number of random paths to create
+    n_paths = 100000  # number of random paths to create
+    # n_paths = 1000  # number of random paths to create
 
     print(f'Path parameters: \nsamples={number_of_samples} \nn_paths={n_paths}')
 
