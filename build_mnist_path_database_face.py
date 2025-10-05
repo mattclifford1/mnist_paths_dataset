@@ -104,6 +104,6 @@ if __name__ == "__main__":
 
     main(number_of_samples=number_of_samples,
          n_paths=n_paths,
-         parallel=True)
+         parallel=False)
 
     
