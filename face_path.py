@@ -13,7 +13,7 @@ from facelift.facelift_model import FaceLift
 
 
 class facelift_paths:
-    def __init__(self, X, y):
+    def __init__(self, X, y, parallel=False):
         self.X = X
         self.y = y
         self.X_embed_2d = None
@@ -21,7 +21,7 @@ class facelift_paths:
         self.init_config()
         # Initialise the facelift explainer
         self.cf_explainer = FaceLift(self.X, self.config)
-        self.cf_explainer.init_weights_and_graph(self.X, self.y, self.class_labels, self.predictions)
+        self.cf_explainer.init_weights_and_graph(self.X, self.y, self.class_labels, self.predictions, parallel=parallel)
 
     def make_model(self):
         self.model = mlp_classifier(self.X, self.y).fitted_model

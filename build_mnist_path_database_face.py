@@ -34,7 +34,8 @@ def get_face_path_df(face_finder,
 
 def main(number_of_samples=None, 
          n_paths=100000,
-         labels=set(range(10))):
+         labels=set(range(10)),
+         parallel=False):
     # load the MNIST data
     print("Loading MNIST data...")
     X, y = load_mnist_data("mnist_data/mnist_train.csv",
@@ -42,7 +43,7 @@ def main(number_of_samples=None,
     print(f"Loaded MNIST data with {X.shape[0]} samples.")
     
     # build the path finder instance from the data
-    face_finder = facelift_paths(X, y)
+    face_finder = facelift_paths(X, y, parallel=parallel)
 
     # create a list of paths between random start and end points
     path_dfs = []
@@ -102,6 +103,7 @@ if __name__ == "__main__":
     print(f'Path parameters: \nsamples={number_of_samples} \nn_paths={n_paths}')
 
     main(number_of_samples=number_of_samples,
-         n_paths=n_paths)
+         n_paths=n_paths,
+         parallel=True)
 
     

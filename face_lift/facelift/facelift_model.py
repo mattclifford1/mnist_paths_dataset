@@ -182,7 +182,7 @@ class FaceLift:
         else:
             raise ValueError("Distance function is not supported. Available distance functions are \"l1\", \"l2\" and \"weighted\".")
 
-    def init_weights_and_graph(self, X, y, class_labels, predictions):
+    def init_weights_and_graph(self, X, y, class_labels, predictions, parallel=False):
         self.X = X
         self.y = y
         self.class_labels = class_labels
@@ -205,7 +205,7 @@ class FaceLift:
         }
         
         print("Constructing the weight matrix...")
-        weight_matrix = get_weight_matrix(params, parallel=False)
+        weight_matrix = get_weight_matrix(params, parallel=parallel)
         print("Constructing graph...")
         self.graph = construct_graph(weight_matrix)
         print("Graph construction completed.")
