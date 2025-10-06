@@ -1,4 +1,4 @@
-nohup /home/matt/anaconda3/envs/mnist_paths/bin/python -u /home/matt/projects/mnist_paths_dataset/build_mnist_path_database_face.py> output.log 2>&1 &
+nohup /home/matt/anaconda3/envs/mnist_paths/bin/python -u /home/matt/projects/mnist_paths_dataset/build_mnist_path_database_face.py> output-FACE.log 2>&1 &
 
 
-[1] 40816
+nohup /home/matt/anaconda3/envs/mnist_paths/bin/python -u /home/matt/projects/mnist_paths_dataset/build_mnist_path_database.py> output-shortest.log 2>&1 &

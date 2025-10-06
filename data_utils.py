@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 import numpy as np
 from sklearn.model_selection import train_test_split
 
@@ -64,3 +65,11 @@ def process_mnist_face(data_df):
     y = y[list(all_indices)]
 
     return X, y
+
+
+def save_dfs(dfs, path):
+    # concatenate all path dfs into a single df
+    all_paths_df = pd.concat(dfs, ignore_index=True)
+    os.makedirs("mnist_paths_datasets", exist_ok=True)
+    all_paths_df.to_csv(path, index=False)
+    print(f"Saved paths to {path}")

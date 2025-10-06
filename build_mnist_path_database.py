@@ -2,24 +2,8 @@ import pandas as pd
 import numpy as np
 import os
 from tqdm import tqdm
-import random
 from shortest_path import shortest_path
-
-
-def load_mnist_data(csv_path, n_samples=None):
-    # Load MNIST from CSV (assuming first column is label, rest are pixels)
-    df = pd.read_csv(csv_path)
-    X = df.iloc[:, 1:].values.astype(np.float32)
-    y = df.iloc[:, 0].values  
-
-    # Subsample if n_samples is specified
-    if n_samples is not None:
-        if n_samples > X.shape[0]:
-            raise ValueError(f"n_samples {n_samples} exceeds dataset size {X.shape[0]}")
-        X = X[:n_samples]
-        y = y[:n_samples]
-    
-    return X, y
+from data_utils import load_mnist_data, save_dfs
 
 
 def get_shortest_path_df(shortest_path_finder, 
@@ -53,6 +37,7 @@ def main(number_of_samples=None,
     # load the MNIST data
     X, y = load_mnist_data("mnist_data/mnist_train.csv",
                            n_samples=number_of_samples)
+    X = X.values
 
     # build the path finder instance from the data
     shortest_path_finder = shortest_path(
@@ -87,8 +72,11 @@ def main(number_of_samples=None,
         }
         start_end_details.append(details)
 
-    # calculate all paths multiprocessing
+    # calculate all paths 
     path_dfs = []
+    data_size = X.shape[0]
+    print(f"Creating {n_paths} paths with data size {data_size}...")
+    i = 0
     for single in tqdm(start_end_details, desc="creating paths"):
         path_df = get_shortest_path_df(shortest_path_finder,
                                        single['start_idx'],
@@ -97,6 +85,13 @@ def main(number_of_samples=None,
                                        end_label=single['end_label'],
                                        path_id=single['path_id'])
         path_dfs.append(path_df)
+
+        # see if we need to save intermediate results
+        if (i) % (n_paths/2) == 0:
+            path = f"mnist_paths_datasets/mnist_paths_space-{distance_model}_k-{k_neighbors}_paths-{i}_datasize-{data_size}.csv"
+            save_dfs(path_dfs, path)
+
+        i += 1
 
     # concatenate all path dfs into a single df
     all_paths_df = pd.concat(path_dfs, ignore_index=True)
@@ -109,7 +104,7 @@ def main(number_of_samples=None,
 
 if __name__ == "__main__":
     number_of_samples = None  # 59999 or None for full dataset
-    # number_of_samples = 2000  # for quick testing
+    number_of_samples = 10000  # for quick testing
     distance_model = 'pca'  # options: 'raw', 'pca', or 'tsne'
     k_neighbors = 20 # number of neighbors for k-NN graph
     n_paths = 100000  # number of random paths to create

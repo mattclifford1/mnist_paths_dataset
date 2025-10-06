@@ -4,7 +4,7 @@ import os
 from tqdm import tqdm
 import random
 from face_path import facelift_paths
-from data_utils import load_mnist_data
+from data_utils import load_mnist_data, save_dfs
 
 
 def get_face_path_df(face_finder, 
@@ -74,7 +74,8 @@ def main(number_of_samples=None,
 
         # see if we need to save intermediate results
         if (i) % (n_paths/10) == 0:
-            save_dfs(path_dfs, data_size, n_paths=i)
+            path = f"mnist_paths_datasets/mnist_paths_FACE_paths-{i}_datasize-{data_size}.csv"
+            save_dfs(path_dfs, path)
 
         i += 1
     # concatenate all path dfs into a single df
@@ -85,14 +86,6 @@ def main(number_of_samples=None,
     all_paths_df.to_csv(path, index=False)
     print(f"Saved paths to {path}")
 
-
-def save_dfs(dfs, data_size, n_paths):
-    # concatenate all path dfs into a single df
-    all_paths_df = pd.concat(dfs, ignore_index=True)
-    path = f"mnist_paths_datasets/mnist_paths_FACE_paths-{n_paths}_datasize-{data_size}.csv"
-    os.makedirs("mnist_paths_datasets", exist_ok=True)
-    all_paths_df.to_csv(path, index=False)
-    print(f"Saved paths to {path}")
 
 if __name__ == "__main__":
     number_of_samples = None  # 59999 or None for full dataset
