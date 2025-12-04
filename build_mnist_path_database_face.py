@@ -47,6 +47,7 @@ def main(number_of_samples=None,
 
     # create a list of paths between random start and end points
     path_dfs = []
+    already_tried = []
     data_size = X.shape[0]
     print(f"Creating {n_paths} paths with data size {data_size}...")
     # for i in tqdm(range(n_paths), desc="making paths"):
@@ -61,11 +62,18 @@ def main(number_of_samples=None,
         end_label = random.choice(possible_end_labels)
         # path_id = f"{start_idx}_to_{end_label}"
 
+        str_id = f'{start_idx} -> {end_label}'
+        # don't redo already tried since only path is returned from start to end label only
+        if str_id in already_tried:
+            continue
+
         # make the paths
         path_df = get_face_path_df(face_finder,
                                        start_idx,
                                        end_label,
                                        start_label=y[start_idx])
+        already_tried.append(str_id)
+
         if path_df is None:
             continue
 
@@ -90,7 +98,7 @@ def main(number_of_samples=None,
 if __name__ == "__main__":
     number_of_samples = None  # 59999 or None for full dataset
     number_of_samples = 10000  # for quick testing (can't go below 10000 for mnist?)
-    n_paths = 1000000  # number of random paths to create
+    n_paths = 100000  # number of random paths to create
     # n_paths = 1000  # number of random paths to create
 
     print(f'Path parameters: \nsamples={number_of_samples} \nn_paths={n_paths}')
