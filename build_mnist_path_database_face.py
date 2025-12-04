@@ -3,6 +3,7 @@ import numpy as np
 import os
 from tqdm import tqdm
 import random
+import time
 from face_path import facelift_paths
 from data_utils import load_mnist_data, save_dfs
 
@@ -50,7 +51,10 @@ def main(number_of_samples=None,
     already_tried = []
     data_size = X.shape[0]
     print(f"Creating {n_paths} paths with data size {data_size}...")
-    # for i in tqdm(range(n_paths), desc="making paths"):
+
+    # max number of paths, in reality not all will make a valid path (FACE gets stuck on returns None path)
+    expected_max_paths = n_paths * (len(labels)-1)
+    # alt method: make all possible paths and shuffle that list, would only work with the one path per start ind and end label version of FACE
     i = 0
     while i < n_paths + 1:
         start_idx = np.random.randint(0, X.shape[0]-1)
@@ -73,6 +77,11 @@ def main(number_of_samples=None,
                                        end_label,
                                        start_label=y[start_idx])
         already_tried.append(str_id)
+
+        # only for FACE where one path per start and end label is possible
+        if len(already_tried) == expected_max_paths:
+            print("Reached maximum number of unique paths possible.")
+            break
 
         if path_df is None:
             continue
@@ -103,8 +112,15 @@ if __name__ == "__main__":
 
     print(f'Path parameters: \nsamples={number_of_samples} \nn_paths={n_paths}')
 
+    start_time = time.time()
     main(number_of_samples=number_of_samples,
          n_paths=n_paths,
          parallel=False)
+    end_time = time.time()
+    # show time in hours, minutes, seconds
+    elapsed_time = end_time - start_time
+    hours, rem = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(rem, 60)
+    print(f"Total execution time: {int(hours)}h {int(minutes)}m {seconds:.2f}s")
 
     
