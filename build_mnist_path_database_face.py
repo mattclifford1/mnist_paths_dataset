@@ -89,7 +89,7 @@ def main(number_of_samples=None,
 
 if __name__ == "__main__":
     number_of_samples = None  # 59999 or None for full dataset
-    # number_of_samples = 10000  # for quick testing (can't go below 10000 for mnist?)
+    number_of_samples = 10000  # for quick testing (can't go below 10000 for mnist?)
     n_paths = 1000000  # number of random paths to create
     # n_paths = 1000  # number of random paths to create
 
