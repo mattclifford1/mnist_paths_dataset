@@ -112,7 +112,7 @@ if __name__ == "__main__":
     start_time = time.time()
     main(number_of_samples=number_of_samples,
          n_paths=n_paths,
-         parallel=False,  # True uses more RAM so set to False for large dataset size
+         parallel=True,  # True uses more RAM so set to False for large dataset size
          )
     end_time = time.time()
     # show time in hours, minutes, seconds
