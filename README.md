@@ -14,7 +14,8 @@ reqs: using python 3.12 and deps in requirements.txt
 
 
 
-
+# todo
+index properlyy with no read columns on csv
 
 
 

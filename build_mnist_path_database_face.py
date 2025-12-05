@@ -56,6 +56,7 @@ def main(number_of_samples=None,
     expected_max_paths = n_paths * (len(labels)-1)
     # alt method: make all possible paths and shuffle that list, would only work with the one path per start ind and end label version of FACE
     i = 0
+    pbar = tqdm(total=expected_max_paths)
     while i < n_paths + 1:
         start_idx = np.random.randint(0, X.shape[0]-1)
         start_label = y[start_idx]
@@ -77,9 +78,10 @@ def main(number_of_samples=None,
                                        end_label,
                                        start_label=y[start_idx])
         already_tried.append(str_id)
+        pbar.update(1)
 
         # only for FACE where one path per start and end label is possible
-        if len(already_tried) == expected_max_paths:
+        if len(already_tried) == (expected_max_paths - 1):
             print("Reached maximum number of unique paths possible.")
             break
 
@@ -95,6 +97,9 @@ def main(number_of_samples=None,
             save_dfs(path_dfs, path)
 
         i += 1
+
+    pbar.close()
+    print(f"Created {len(path_dfs)} valid paths.")
     # concatenate all path dfs into a single df
     all_paths_df = pd.concat(path_dfs, ignore_index=True)
     data_size = X.shape[0]
