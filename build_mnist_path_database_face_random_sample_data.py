@@ -48,46 +48,56 @@ def main(number_of_samples=None,
 
     # create a list of paths between random start and end points
     path_dfs = []
+    already_tried = []
     data_size = X.shape[0]
+    print(f"Creating {n_paths} paths with data size {data_size}...")
 
     # max number of paths, in reality not all will make a valid path (FACE gets stuck on returns None path)
-    possible_pairs = [(i, j) for i in range(data_size) for j in labels]
-    # expected_max_paths = data_size * (len(labels)-1)
-    expected_max_paths = len(possible_pairs)
-    print(f"Creating {expected_max_paths} max paths with data size {data_size}...")
-    # make all possible paths and shuffle that list, only works with the one path per start ind and end label version of FACE
+    if number_of_samples is None:
+        n_samples = 60000  # full mnist train set size
+    expected_max_paths = number_of_samples * (len(labels)-1)
+    # alt method: make all possible paths and shuffle that list, would only work with the one path per start ind and end label version of FACE
     i = 0
-    already_tried = []
     pbar = tqdm(total=expected_max_paths)
-    for pair in possible_pairs:
-        # get start and end of the path
-        start_idx, end_label = pair
+    while i < n_paths + 1:
+        start_idx = np.random.randint(0, X.shape[0]-1)
         start_label = y[start_idx]
-        if start_label == end_label:
-            pbar.update(1)
-            continue
+        # get random number in labels that is not start label
+        possible_end_labels = list(labels - set([start_label]))
+        if len(possible_end_labels) == 0:
+            raise ValueError("No possible end labels found")
+        end_label = random.choice(possible_end_labels)
+        # path_id = f"{start_idx}_to_{end_label}"
 
-        # check the path is valid
         str_id = f'{start_idx} -> {end_label}'
+        # don't redo already tried since only path is returned from start to end label only
         if str_id in already_tried:
-            raise ValueError(f"Already tried path {str_id}, this should happen, check for bug!!!")
+            continue
 
         # make the paths
         path_df = get_face_path_df(face_finder,
                                        start_idx,
                                        end_label,
                                        start_label=y[start_idx])
-        # check the path
         already_tried.append(str_id)
         pbar.update(1)
+
+        # only for FACE where one path per start and end label is possible
+        if len(already_tried) == (expected_max_paths - 1):
+            print("Reached maximum number of unique paths possible.")
+            break
+
         if path_df is None:
             continue
+
         path_dfs.append(path_df)
+
 
         # see if we need to save intermediate results
         if (i) % (n_paths/10) == 0:
             path = f"mnist_paths_datasets/mnist_paths_FACE_paths-{i}_datasize-{data_size}.csv"
             save_dfs(path_dfs, path)
+
         i += 1
 
     pbar.close()
@@ -95,7 +105,7 @@ def main(number_of_samples=None,
     # concatenate all path dfs into a single df
     all_paths_df = pd.concat(path_dfs, ignore_index=True)
     data_size = X.shape[0]
-    path = f"mnist_paths_datasets/mnist_paths_FACE_paths-{i}_datasize-{data_size}.csv"
+    path = f"mnist_paths_datasets/mnist_paths_FACE_paths-{n_paths}_datasize-{data_size}.csv"
     os.makedirs("mnist_paths_datasets", exist_ok=True)
     all_paths_df.to_csv(path, index=False)
     print(f"Saved paths to {path}")
@@ -112,8 +122,7 @@ if __name__ == "__main__":
     start_time = time.time()
     main(number_of_samples=number_of_samples,
          n_paths=n_paths,
-         parallel=False,  # True uses more RAM so set to False for large dataset size
-         )
+         parallel=False)
     end_time = time.time()
     # show time in hours, minutes, seconds
     elapsed_time = end_time - start_time
