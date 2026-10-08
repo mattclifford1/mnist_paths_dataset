@@ -1,0 +1,18 @@
+[project]
+name = "mnist-paths-dataset"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "dill==0.4.0",
+    "joblib==1.5.2",
+    "matplotlib==3.10.6",
+    "networkx==3.5",
+    "notebook==7.4.5",
+    "numba==0.62.0",
+    "numpy==2.3.3",
+    "pandas==2.3.2",
+    "pyyaml==6.0.2",
+    "scikit-learn==1.7.2",
+    "scipy==1.16.2",
+    "tqdm==4.67.1",
+]
